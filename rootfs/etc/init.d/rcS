@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Copyright (C) 2011 fulinux <fulinux@gmail.com>
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#                           
+
+for i in /etc/init.d/S??* ; do
+            $i
+            done
+

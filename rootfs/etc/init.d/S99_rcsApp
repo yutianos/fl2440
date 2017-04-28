@@ -1,0 +1,14 @@
+
+#!/bin/sh
+# Copyright (C) 2011 fulinux <fulinux@gmail.com>
+#
+# Start all init scripts in /apps/etc/init.d
+# executing them in numerical order.
+#
+if (test -d /apps/etc/init.d)
+        then
+        for i in /apps/etc/init.d/S??* ; do
+        $i
+        done
+fi
+
