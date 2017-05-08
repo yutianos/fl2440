@@ -11,6 +11,8 @@
  *
 */
 
+#include <linux/io.h>
+
 #ifndef __DM9000_PLATFORM_DATA
 #define __DM9000_PLATFORM_DATA __FILE__
 

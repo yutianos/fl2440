@@ -22,6 +22,9 @@
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+#include <linux/dm9000.h>
+#include <linux/i2c.h>
+#include <linux/i2c/at24.h>
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -101,6 +104,55 @@ static struct s3c2410_uartcfg smdk2440_uartcfgs[] __initdata = {
 		.ufcon	     = 0x51,
 	}
 };
+/* at24c02 eeprom i2c  */
+
+static struct at24_platform_data at24c02 ={
+    .byte_len   = SZ_2K / 8,
+    .page_size  = 8,
+    .flags      = 0,
+};
+
+static struct i2c_board_info __initdata smdk_i2c_devices[] ={
+    [0] = {
+        I2C_BOARD_INFO("24c02",0x50),
+        .platform_data = &at24c02,
+    },
+};
+
+/* DM9000 ethernet controller */
+#define DM9000_BASE     (S3C2410_CS4 + 0x300)
+
+static struct resource s3c_dm9000_resource[] ={
+    [0]={
+        .start = DM9000_BASE,
+        .end   = DM9000_BASE + 3,
+        .flags = IORESOURCE_MEM 
+    },
+    [1]={
+        .start = DM9000_BASE + 4,
+        .end   = DM9000_BASE + 7,
+        .flags = IORESOURCE_MEM
+    },
+    [2]={
+        .start = IRQ_EINT7,
+        .end   = IRQ_EINT7,
+        .flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
+    }
+};
+
+static struct dm9000_plat_data s3c_dm9000_pdata ={
+    .flags = (DM9000_PLATF_16BITONLY | DM9000_PLATF_NO_EEPROM),
+};
+
+static struct platform_device s3c_device_dm9000 ={
+    .name   = "dm9000",
+    .id     = -1,
+    .num_resources = ARRAY_SIZE(s3c_dm9000_resource),
+    .resource  = s3c_dm9000_resource,
+    .dev   = {
+        .platform_data = &s3c_dm9000_pdata,
+    },
+};
 
 /* LCD driver info */
 
@@ -155,6 +207,7 @@ static struct platform_device *smdk2440_devices[] __initdata = {
 	&s3c_device_wdt,
 	&s3c_device_i2c0,
 	&s3c_device_iis,
+    &s3c_device_dm9000,    /* add dm9000 device 2017-5-8 */
 };
 
 static void __init smdk2440_map_io(void)
@@ -171,6 +224,7 @@ static void __init smdk2440_machine_init(void)
 
 	platform_add_devices(smdk2440_devices, ARRAY_SIZE(smdk2440_devices));
 	smdk_machine_init();
+    i2c_register_board_info(0,smdk_i2c_devices,ARRAY_SIZE(smdk_i2c_devices));
 }
 
 MACHINE_START(S3C2440, "SMDK2440")
