@@ -154,6 +154,9 @@ static struct platform_device s3c_device_dm9000 ={
     },
 };
 
+/* rtc driver  */
+//arch/arm/plat-samsung/devs.c s3c_device_rtc 
+
 /* LCD driver info */
 
 static struct s3c2410fb_display smdk2440_lcd_cfg __initdata = {
@@ -208,6 +211,7 @@ static struct platform_device *smdk2440_devices[] __initdata = {
 	&s3c_device_i2c0,
 	&s3c_device_iis,
     &s3c_device_dm9000,    /* add dm9000 device 2017-5-8 */
+    &s3c_device_rtc,    /* add rtc device 2017-5-9 */
 };
 
 static void __init smdk2440_map_io(void)
