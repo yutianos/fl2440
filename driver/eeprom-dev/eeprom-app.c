@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     int     length;  
     unsigned char rdwr_addr = 0x00;  
     unsigned char device_addr = 0x50; 
-    unsigned char data[] = "Hello";    
+    unsigned char data[] = "Hello_w";    
 
     struct i2c_rdwr_ioctl_data e2prom_data;  
 

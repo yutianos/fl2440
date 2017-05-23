@@ -1,0 +1,25 @@
+#!/bin/sh
+
+
+mtd_num=4
+mtd_name=/mnt/datablock
+mnt_opts=rw
+
+if [ ! -e /dev/ubi$mtd_num ] ; then
+    ubiattach -m $mtd_num -d $mtd_num /dev/ubi_ctrl
+    echo "ubiattach -m $mtd_num -d $mtd_num /dev/ubi_ctrl"
+    sleep 1
+fi
+
+if [ ! -e /dev/ubi$mtd_num"_0" ] ; then 
+    ubimkvol /dev/ubi$mtd_num -n 0 -N $mtd_name -m
+fi
+
+if [ ! -z $mnt_opts ] ; then
+    mnt_opts="-o $mnt_opts"
+fi
+
+mtd_num=4_0
+echo "mount -t ubifs $mnt_opts ubi$mtd_num /$mtd_name"
+mount -t ubifs $mnt_opts ubi$mtd_num /$mtd_name
+                    
